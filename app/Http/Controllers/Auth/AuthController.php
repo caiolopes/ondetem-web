@@ -141,7 +141,8 @@ class AuthController extends Controller
         }
         // all good so return the token
         $user = JWTAuth::user();
-        return response()->json(['token' => $token, 'user' => $user], Response::HTTP_OK);
+        $user['token'] = $token;
+        return response()->json($user, Response::HTTP_OK);
     }
 
     /**

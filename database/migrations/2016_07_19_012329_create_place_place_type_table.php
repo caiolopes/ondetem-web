@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateConfirmationsTable extends Migration
+class CreatePlacePlaceTypeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,14 +12,13 @@ class CreateConfirmationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('confirmations', function (Blueprint $table) {
+        Schema::create('place_place_type', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
             $table->uuid('place_id');
-            $table->boolean('exists');
-            $table->unique(array('user_id', 'place_id'));
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('place_type_id')->unsigned();
+            $table->unique(array('place_id', 'place_type_id'));
             $table->foreign('place_id')->references('id')->on('places')->onDelete('cascade');
+            $table->foreign('place_type_id')->references('id')->on('place_types')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateConfirmationsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('confirmations');
+        Schema::drop('place_place_type');
     }
 }

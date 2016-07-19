@@ -4,14 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Confirmation extends Model
+class PlaceType extends Model
 {
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'confirmations';
+    protected $table = 'place_types';
 
     /**
      * The attributes that aren't mass assignable.
@@ -26,14 +27,10 @@ class Confirmation extends Model
      * @var array
      */
     protected $hidden = [
-        'created_at', 'updated_at', 'pivot', 'user_id', 'place_id'
+        'created_at', 'updated_at', 'pivot'
     ];
 
-    public function place() {
-        return $this->belongsTo('App\Place');
-    }
-
-    public function user() {
-        return $this->belongsTo('App\User');
+    public function members() {
+        return $this->belongsToMany('App\Place')->withTimestamps();
     }
 }

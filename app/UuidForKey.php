@@ -13,7 +13,6 @@ trait UuidForKey
      */
     public static function bootUuidForKey() {
         static::creating(function ($model) {
-            $model->incrementing = false;
             $model->{$model->getKeyName()} = Uuid::generate(4);
         });
     }

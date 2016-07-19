@@ -15,6 +15,8 @@ class Place extends Model
      */
     protected $table = 'places';
 
+    public $incrementing = false;
+
     /**
      * The attributes that aren't mass assignable.
      *
@@ -24,5 +26,9 @@ class Place extends Model
 
     public function confirmations() {
         return $this->hasMany('App\Confirmation');
+    }
+
+    public function place_type() {
+        return $this->belongsToMany('App\PlaceType')->withTimestamps();
     }
 }

@@ -10,20 +10,46 @@ use Log;
 use Validator, JWTAuth;
 
 class PlaceController extends Controller {
-    public function create(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'types' => 'required|array',
-            'types.*.id' => 'required|numeric|exists:place_types,id',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric'
-        ]);
+    private $validationRules = [
+        'name' => 'required',
+        'types' => 'required|array',
+        'types.*.id' => 'required|numeric|exists:place_types,id',
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric'
+    ];
+
+
+    // Web Routes
+    public function addNewPlaceForm()
+    {
+        return view('place.add');
+    }
+
+    public function addNewPlace(Request $request)
+    {
+        $this->validate($request, $this->validationRules);
+
+        $this->store($request);
+
+        return redirect('/home');
+    }
+
+    // API REST Routes
+
+    public function create(Request $request)
+    {
+        $validator = Validator::make($request->all(), $this->validationRules);
 
         if ($validator->fails())
             return response()->json(['error' => ['message' => $validator->messages()]],
                 Response::HTTP_BAD_REQUEST,
                 $headers = []);
 
+        return response()->json($this->store($request), Response::HTTP_CREATED);
+    }
+
+    private function store(Request $request)
+    {
         $place = Place::create($request->except('types'));
 
         foreach($request->only('types')['types'] as $type) {
@@ -32,12 +58,11 @@ class PlaceController extends Controller {
             }
         }
 
-        $place = Place::with(['place_type', 'confirmations'])->get()->find($place->id);
-
-        return response()->json($place, Response::HTTP_CREATED);
+        return $place = Place::with(['place_type', 'confirmations'])->get()->find($place->id);
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         // check if it is admin to delete
         $user = JWTAuth::parseToken()->toUser();
         if ($user->is_admin) {
@@ -52,14 +77,9 @@ class PlaceController extends Controller {
         return response()->json([], Response::HTTP_UNAUTHORIZED);
     }
 
-    public function update(Request $request, $id) {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'types' => 'required,array',
-            'types.*.id' => 'required,numeric,exists:place_types,id',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric'
-        ]);
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), $this->validationRules);
 
         if ($validator->fails()) {
             return response()->json([
@@ -78,7 +98,8 @@ class PlaceController extends Controller {
         return response()->json($elem, Response::HTTP_OK);
     }
 
-    public function confirm($id, Request $request) {
+    public function confirm($id, Request $request)
+    {
         $place = Place::find($id);
         $user_id = JWTAuth::parseToken()->toUser()->id;
 
@@ -107,7 +128,8 @@ class PlaceController extends Controller {
         return response()->json($confirmation, Response::HTTP_OK);
     }
 
-    public function all(Request $request) {
+    public function all(Request $request)
+    {
         $per_page = $request->input('per');
         $form = $request->input('form');
         if ($form != null)
@@ -123,7 +145,8 @@ class PlaceController extends Controller {
         return Place::with('place_type', 'confirmations')->paginate($per_page);
     }
 
-    public function get($id) {
+    public function get($id)
+    {
         $elem = Place::find($id);
         if ($elem != null)
             return response()->json($elem, Response::HTTP_OK);

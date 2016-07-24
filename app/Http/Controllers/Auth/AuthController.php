@@ -19,11 +19,6 @@ class AuthController extends Controller
     |--------------------------------------------------------------------------
     | Registration & Login Controller
     |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users, as well as the
-    | authentication of existing users. By default, this controller uses
-    | a simple trait to add these behaviors. Why don't you explore it?
-    |
     */
 
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
@@ -74,8 +69,7 @@ class AuthController extends Controller
         ]);
     }
 
-
-    public function refresh(Request $request) {
+    public function refreshJwt(Request $request) {
         if (!JWTAuth::parser()->setRequest($request)->hasToken()) {
             return response()->json(['error' => 'Token not provided'], Response::HTTP_BAD_REQUEST);
         }
@@ -89,7 +83,7 @@ class AuthController extends Controller
         return response()->json(compact('token'));
     }
 
-    public function logout() {
+    public function logoutJwt() {
         try {
             $token = JWTAuth::parseToken()->getToken();
             JWTAuth::invalidate($token);
@@ -108,7 +102,7 @@ class AuthController extends Controller
      *
      * @param \Illuminate\Http\Request|Request $request
      */
-    public function postLogin(Request $request)
+    public function loginJwt(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|max:255',
@@ -118,7 +112,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'error' => [
-                    'message'     => $validator->messages()
+                    'message' => $validator->messages()
                 ]],
                 Response::HTTP_BAD_REQUEST,
                 $headers = []

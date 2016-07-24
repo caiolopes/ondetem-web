@@ -22,6 +22,15 @@ class PlaceType extends Model
     protected $guarded = ['id'];
 
     /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+    ];
+
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array

@@ -33,6 +33,7 @@
       <sourceFolder url="file://$MODULE_DIR$/vendor/fzaninotto/faker/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/vendor/fzaninotto/faker/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/public" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -88,5 +89,6 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="ondetem node_modules" level="project" />
   </component>
 </module>

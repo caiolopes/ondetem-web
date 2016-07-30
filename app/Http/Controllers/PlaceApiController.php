@@ -9,7 +9,7 @@ use \Illuminate\Http\Response;
 use Log;
 use Validator, JWTAuth;
 
-class PlaceController extends Controller {
+class PlaceApiController extends Controller {
     private $validationRules = [
         'name' => 'required',
         'types' => 'required|array',
@@ -17,24 +17,6 @@ class PlaceController extends Controller {
         'latitude' => 'required|numeric',
         'longitude' => 'required|numeric'
     ];
-
-
-    // Web Routes
-    public function addNewPlaceForm()
-    {
-        return view('place.add');
-    }
-
-    public function addNewPlace(Request $request)
-    {
-        $this->validate($request, $this->validationRules);
-
-        $this->store($request);
-
-        return redirect('/home');
-    }
-
-    // API REST Routes
 
     public function create(Request $request)
     {

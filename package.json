@@ -5,8 +5,10 @@
     "dev": "gulp watch"
   },
   "devDependencies": {
+    "bootstrap-sass": "^3.3.0",
+    "elixir-coffeeify": "^1.0.3",
     "gulp": "^3.9.1",
-    "laravel-elixir": "^5.0.0",
-    "bootstrap-sass": "^3.3.0"
+    "jquery": "^2.2.4",
+    "laravel-elixir": "^5.0.0"
   }
 }

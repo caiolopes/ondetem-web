@@ -29,6 +29,15 @@ class Confirmation extends Model
         'created_at', 'updated_at', 'pivot', 'user_id', 'place_id'
     ];
 
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'exists' => 'boolean',
+    ];
+
     public function place() {
         return $this->belongsTo('App\Place');
     }

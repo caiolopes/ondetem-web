@@ -11,12 +11,12 @@
             return response()->json(compact('user'));
         });
 
-        Route::get('api/place', 'PlaceController@all');
-        Route::post('api/place', 'PlaceController@create');
-        Route::get('api/place/{id}', 'PlaceController@get');
-        Route::put('api/place/{id}', 'PlaceController@update');
-        Route::delete('api/place/{id}', 'PlaceController@delete');
-        Route::post('api/confirm/{id}', 'PlaceController@confirm');
+        Route::get('api/place', 'PlaceApiController@all');
+        Route::post('api/place', 'PlaceApiController@create');
+        Route::get('api/place/{id}', 'PlaceApiController@get');
+        Route::put('api/place/{id}', 'PlaceApiController@update');
+        Route::delete('api/place/{id}', 'PlaceApiController@delete');
+        Route::post('api/confirm/{id}', 'PlaceApiController@confirm');
         Route::get('api/categories/', 'PlaceTypeController@categories');
         Route::get('api/types/', 'PlaceTypeController@types');
     });
@@ -25,6 +25,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/home', 'HomeController@index');
 
 Route::get('/categories/', [
     'middleware' => 'auth',
@@ -36,11 +38,16 @@ Route::get('/types/', [
     'uses' => 'PlaceTypeController@types'
 ]);
 
-Route::get('/place/add', 'PlaceController@addNewPlaceForm');
-Route::post('/place', 'PlaceController@addNewPlace');
-//Route::get('/places', 'PlaceController@list');
-//Route::delete('/place', 'PlaceController@');
+Route::group(['middleware' => 'auth'], function() {
+    Route::get('/places/search', 'PlaceWebController@getIndex');
+    Route::get('/places', 'PlaceWebController@getPlaces');
+    Route::get('/place', 'PlaceWebController@getAdd');
+    Route::post('/place', 'PlaceWebController@postAdd');
+    Route::get('/place/confirm', 'PlaceWebController@getConfirm');
+    Route::get('/place/{id}', 'PlaceWebController@getPlace');
+    Route::get('/place/edit/{id}', 'PlaceWebController@getEdit');
+    Route::post('/place/edit', 'PlaceWebController@postEdit');
+    Route::delete('/place/{id}', 'PlaceWebController@deletePlace');
+});
 
 Route::auth();
-
-Route::get('/home', 'HomeController@index');

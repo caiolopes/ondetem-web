@@ -8,7 +8,8 @@
                 <div class="panel-heading">Bem-vindo</div>
 
                 <div class="panel-body">
-                    Página inicial
+                    <h4>Página inicial</h4>
+                    <p>Broker para permitir o cadastro de novos Pontos de Interesse (PoI) no aplicativo Onde Tem.</p>
                 </div>
             </div>
         </div>

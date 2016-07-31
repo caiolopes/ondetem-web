@@ -46,8 +46,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/place/confirm', 'PlaceWebController@getConfirm');
     Route::get('/place/{id}', 'PlaceWebController@getPlace');
     Route::get('/place/edit/{id}', 'PlaceWebController@getEdit');
-    Route::post('/place/edit', 'PlaceWebController@postEdit');
-    Route::delete('/place/{id}', 'PlaceWebController@deletePlace');
+    Route::post('/place/edit/{id}', 'PlaceWebController@postEdit');
+    Route::get('/place/delete/{id}', 'PlaceWebController@getDelete');
 });
 
 Route::auth();

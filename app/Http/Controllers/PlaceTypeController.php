@@ -11,7 +11,11 @@ class PlaceTypeController extends Controller
 {
     public function categories(Request $request)
     {
-        return DB::table('place_types')->select('category')->distinct()->get();
+        return DB::table('place_types')
+            ->select('category')
+            ->orderBy('category', 'asc')
+            ->distinct()
+            ->get();
     }
 
     public function types(Request $request)
@@ -19,7 +23,13 @@ class PlaceTypeController extends Controller
         $category = $request->input('category');
 
         if ($category != null)
-            return DB::table('place_types')->select('id')->addSelect('type')->where('category', $category)->distinct()->get();
+            return DB::table('place_types')
+                ->select('id')
+                ->addSelect('type')
+                ->where('category', $category)
+                ->orderBy('type', 'asc')
+                ->distinct()
+                ->get();
         else
             return 'Missing Category';
     }

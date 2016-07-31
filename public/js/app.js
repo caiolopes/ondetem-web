@@ -12180,18 +12180,21 @@ return jQuery;
 }));
 
 },{}],3:[function(require,module,exports){
-var geocodeAddress, getCategories, getTypes, getUrlVars, marker;
+var geocodeAddress, getCategories, getTypes, getUrlVars;
 
 window.$ = window.jQuery = require('jquery');
 
 require('bootstrap-sass');
 
 getCategories = function() {
-  var category, vars;
+  var category, placeCategory, vars;
+  placeCategory = $('#place-category');
   category = void 0;
   vars = getUrlVars();
   if (vars.category !== void 0) {
     category = vars.category;
+  } else if (placeCategory.length) {
+    category = placeCategory.val();
   }
   $.getJSON('/categories', function(data) {
     var html;
@@ -12213,17 +12216,20 @@ getCategories = function() {
 };
 
 getTypes = function(category) {
-  var type, vars;
+  var placeType, type, vars;
+  placeType = $('#place-type');
   type = void 0;
   vars = getUrlVars();
   if (vars.type !== void 0) {
     type = vars.type;
+  } else if (placeType.length) {
+    type = placeType.val();
   }
   $.getJSON('/types?category=' + category, function(data) {
     var html;
     html = '';
     $.each(data, function(index, value) {
-      if (value.id === type) {
+      if (value.id === type || value.type === type) {
         html += '<option value="' + value.id + '" selected>' + value.type + '</option>';
       } else {
         html += '<option value="' + value.id + '">' + value.type + '</option>';
@@ -12236,51 +12242,66 @@ getTypes = function(category) {
 $(document).ready(function() {
   var pathname;
   pathname = window.location.pathname;
-  if (pathname.indexOf('place/add') > -1 || pathname.indexOf('places') > -1 || pathname.indexOf('places/search') > -1) {
+  if (pathname === '/place' || pathname === '/places' || pathname === '/places/search') {
+    getCategories();
+  } else if (pathname.indexOf('/place/edit/') > -1) {
     getCategories();
   }
   if ($('#message').length) {
     setTimeout(function() {
-      $('#message').fadeOut('fast');
-    }, 3500);
+      $('#message').fadeOut('slow');
+    }, 5000);
   }
+  $('#confirm-delete').on('show.bs.modal', function(e) {
+    return $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+  });
 });
 
-marker = null;
-
 window.initMap = function() {
-  var geocoder, map;
+  var current, geocoder, lat, latitude, lng, longitude, map, marker;
+  latitude = $('#latitude');
+  longitude = $('#longitude');
+  current = $('#current');
+  marker = null;
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 11,
+    zoom: 12,
     center: {
       lat: -34.397,
       lng: 150.644
     }
   });
-  if (marker === null) {
-    marker = new google.maps.Marker({
-      position: new google.maps.LatLng(-22.005, -47.898),
-      draggable: true
-    });
+  lat = -22.005;
+  lng = -47.898;
+  map.setZoom(15);
+  if (latitude.val().length > 0 && longitude.val().length > 0) {
+    lat = latitude.val();
+    lng = longitude.val();
   }
+  marker = new google.maps.Marker({
+    position: new google.maps.LatLng(lat, lng),
+    draggable: true
+  });
   map.setCenter(marker.position);
   marker.setMap(map);
   google.maps.event.addListener(marker, 'dragend', function(evt) {
-    document.getElementById('current').innerHTML = '<p>O lugar foi posicionado na latitude: ' + evt.latLng.lat().toFixed(3) + ' e longitude: ' + evt.latLng.lng().toFixed(3) + '</p>';
-    document.getElementById('latitude').value = marker.getPosition().lat();
-    document.getElementById('longitude').value = marker.getPosition().lng();
+    current.html('<p>O lugar foi posicionado na latitude: ' + evt.latLng.lat().toFixed(3) + ' e longitude: ' + evt.latLng.lng().toFixed(3) + '</p>');
+    latitude.val(marker.getPosition().lat());
+    longitude.val(marker.getPosition().lng());
   });
   google.maps.event.addListener(marker, 'dragstart', function(evt) {
-    document.getElementById('current').innerHTML = '<p>Posicionando o lugar...</p>';
+    current.html('<p>Posicionando o lugar...</p>');
   });
   geocoder = new google.maps.Geocoder;
-  document.getElementById('search').addEventListener('click', function() {
-    geocodeAddress(geocoder, map);
+  $('#search').click(function() {
+    geocodeAddress(geocoder, map, marker);
   });
 };
 
-geocodeAddress = function(geocoder, resultsMap) {
-  var address;
+geocodeAddress = function(geocoder, resultsMap, marker) {
+  var address, current, latitude, longitude;
+  latitude = $('#latitude');
+  longitude = $('#longitude');
+  current = $('#current');
   address = document.getElementById('address').value;
   geocoder.geocode({
     'address': address
@@ -12290,9 +12311,9 @@ geocodeAddress = function(geocoder, resultsMap) {
       resultsMap.setZoom(15);
       marker.setPosition(results[0].geometry.location);
       resultsMap.setCenter(marker.position);
-      document.getElementById('current').innerHTML = '<p>O lugar foi posicionado na latitude: ' + marker.getPosition().lat().toFixed(3) + ' e longitude: ' + marker.getPosition().lng().toFixed(3) + '</p>';
-      document.getElementById('latitude').value = marker.getPosition().lat();
-      document.getElementById('longitude').value = marker.getPosition().lng();
+      current.html('<p>O lugar foi posicionado na latitude: ' + marker.getPosition().lat().toFixed(3) + ' e longitude: ' + marker.getPosition().lng().toFixed(3) + '</p>');
+      latitude.val(marker.getPosition().lat());
+      longitude.val(marker.getPosition().lng());
     } else {
       alert('Geocode was not successful for the following reason: ' + status);
     }

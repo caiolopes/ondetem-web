@@ -49,9 +49,11 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     @if(Auth::check())
-                        <li><a href="{{ url('/home') }}">Home</a></li>
+                        <li class="{{ (request()->route()->getPath() == 'home') ? 'active' : '' }}"><a href="{{ url('/home') }}">Home</a></li>
+                        <li class="{{ (request()->route()->getPath() == 'place') ? 'active' : '' }}"><a href="{{ url('/place') }}">Cadastrar</a></li>
+                        <li class="{{ (request()->route()->getPath() == 'places') ? 'active' : '' }}"><a href="{{ url('/places') }}">Gerenciar</a></li>
                     @else
-                        <li><a href="{{ url('/') }}">Home</a></li>
+                        <li class="{{ (request()->route()->getPath() == 'home') ? 'active' : '' }}"><a href="{{ url('/') }}">Home</a></li>
                     @endif
                 </ul>
 

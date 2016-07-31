@@ -3,10 +3,13 @@ window.$ = window.jQuery = require('jquery')
 require('bootstrap-sass')
 
 getCategories = ->
+  placeCategory = $('#place-category')
   category = undefined
   vars = getUrlVars()
   if (vars.category != undefined)
     category = vars.category
+  else if (placeCategory.length)
+    category = placeCategory.val()
 
   $.getJSON '/categories', (data) ->
     html = ''
@@ -26,15 +29,18 @@ getCategories = ->
   return
 
 getTypes = (category) ->
+  placeType = $('#place-type')
   type = undefined
   vars = getUrlVars()
   if (vars.type != undefined)
     type = vars.type
+  else if (placeType.length)
+    type = placeType.val()
 
   $.getJSON '/types?category=' + category, (data) ->
     html = ''
     $.each data, (index, value) ->
-      if (value.id == type)
+      if (value.id == type or value.type == type)
         html += '<option value="' + value.id + '" selected>' + value.type + '</option>'
       else
         html += '<option value="' + value.id + '">' + value.type + '</option>'
@@ -45,44 +51,67 @@ getTypes = (category) ->
 
 $(document).ready ->
   pathname = window.location.pathname;
-  if (pathname.indexOf('place/add') > -1 or pathname.indexOf('places') > -1 or pathname.indexOf('places/search') > -1)
+  if (pathname == '/place' or pathname == '/places' or pathname == '/places/search')
+    getCategories()
+  else if (pathname.indexOf('/place/edit/') > -1)
     getCategories()
 
   if $('#message').length
     setTimeout(() ->
-      $('#message').fadeOut('fast')
+      $('#message').fadeOut('slow')
       return
-    3500)
+    5000)
+
+  $('#confirm-delete').on 'show.bs.modal', (e) ->
+    $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'))
+
   return
 
-marker = null
 window.initMap = ->
+  latitude = $('#latitude')
+  longitude = $('#longitude')
+  current = $('#current')
+  marker = null
+
   map = new (google.maps.Map)(document.getElementById('map'),
-    zoom: 11
+    zoom: 12
     center:
       lat: -34.397
       lng: 150.644)
-  if marker == null
-    marker = new (google.maps.Marker)(
-      position: new (google.maps.LatLng)(-22.005, -47.898)
-      draggable: true)
+
+  lat = -22.005
+  lng = -47.898
+  map.setZoom 15
+
+  if (latitude.val().length > 0 and longitude.val().length > 0)
+    lat = latitude.val()
+    lng = longitude.val()
+
+  marker = new (google.maps.Marker)(
+    position: new (google.maps.LatLng)(lat, lng)
+    draggable: true)
   map.setCenter marker.position
   marker.setMap map
+
   google.maps.event.addListener marker, 'dragend', (evt) ->
-    document.getElementById('current').innerHTML = '<p>O lugar foi posicionado na latitude: ' + evt.latLng.lat().toFixed(3) + ' e longitude: ' + evt.latLng.lng().toFixed(3) + '</p>'
-    document.getElementById('latitude').value =  marker.getPosition().lat()
-    document.getElementById('longitude').value =  marker.getPosition().lng()
+    current.html '<p>O lugar foi posicionado na latitude: ' + evt.latLng.lat().toFixed(3) + ' e longitude: ' + evt.latLng.lng().toFixed(3) + '</p>'
+    latitude.val marker.getPosition().lat()
+    longitude.val marker.getPosition().lng()
     return
   google.maps.event.addListener marker, 'dragstart', (evt) ->
-    document.getElementById('current').innerHTML = '<p>Posicionando o lugar...</p>'
+    current.html '<p>Posicionando o lugar...</p>'
     return
   geocoder = new (google.maps.Geocoder)
-  document.getElementById('search').addEventListener 'click', ->
-    geocodeAddress geocoder, map
+  $('#search').click ->
+    geocodeAddress geocoder, map, marker
     return
   return
 
-geocodeAddress = (geocoder, resultsMap) ->
+geocodeAddress = (geocoder, resultsMap, marker) ->
+  latitude = $('#latitude')
+  longitude = $('#longitude')
+  current = $('#current')
+
   address = document.getElementById('address').value
   geocoder.geocode { 'address': address }, (results, status) ->
     if status == google.maps.GeocoderStatus.OK
@@ -90,9 +119,9 @@ geocodeAddress = (geocoder, resultsMap) ->
       resultsMap.setZoom 15
       marker.setPosition results[0].geometry.location
       resultsMap.setCenter marker.position
-      document.getElementById('current').innerHTML = '<p>O lugar foi posicionado na latitude: ' + marker.getPosition().lat().toFixed(3) + ' e longitude: ' + marker.getPosition().lng().toFixed(3) + '</p>'
-      document.getElementById('latitude').value =  marker.getPosition().lat()
-      document.getElementById('longitude').value =  marker.getPosition().lng()
+      current.html '<p>O lugar foi posicionado na latitude: ' + marker.getPosition().lat().toFixed(3) + ' e longitude: ' + marker.getPosition().lng().toFixed(3) + '</p>'
+      latitude.val marker.getPosition().lat()
+      longitude.val marker.getPosition().lng()
     else
       alert 'Geocode was not successful for the following reason: ' + status
     return

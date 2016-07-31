@@ -13,10 +13,10 @@
 
                 <div class="panel-body">
                     <a href="{{ url('/place') }}">
-                        <button class="btn btn-lg btn-primary">Cadastrar novo local</button>
+                        <button class="btn btn-lg btn-primary">Cadastrar novo PoI</button>
                     </a>
                     <a href="{{ url('/places') }}">
-                        <button class="btn btn-lg btn-primary">Listar locais</button>
+                        <button class="btn btn-lg btn-primary">Gerenciar PoIs</button>
                     </a>
                 </div>
             </div>

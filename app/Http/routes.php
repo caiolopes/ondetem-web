@@ -39,7 +39,7 @@ Route::get('/types/', [
 ]);
 
 Route::group(['middleware' => 'auth'], function() {
-    Route::get('/places/search', 'PlaceWebController@getIndex');
+    Route::get('/places/search', 'PlaceWebController@getSearch');
     Route::get('/places', 'PlaceWebController@getPlaces');
     Route::get('/place', 'PlaceWebController@getAdd');
     Route::post('/place', 'PlaceWebController@postAdd');

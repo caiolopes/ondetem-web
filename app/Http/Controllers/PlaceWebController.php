@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Confirmation;
 use App\Place;
+use Auth;
 use \Illuminate\Http\Request;
-use Log;
-use Validator;
 
-class PlaceWebController extends Controller {
+class PlaceWebController extends Controller
+{
     private $validationRules = [
         'name' => 'required',
         'types' => 'required|array',
@@ -47,16 +47,36 @@ class PlaceWebController extends Controller {
 
     public function getConfirm(Request $request)
     {
-        Log::info($request);
         $this->validate($request, [
             'place' => 'bail|required|exists:places,id',
             'exists' => 'required|boolean'
         ]);
 
-        return redirect('/home');
+        $user = Auth::getUser();
+        $place = Place::find($request->get('place'));
+        $confirmation = Confirmation::where(
+            [['user_id', $user->id],
+            ['place_id', $place->id],
+            ['exists', !$request->get('exists')]]
+        )->first();
+
+        if ($confirmation == null) {
+            return redirect()->back()->withErrors('Não é possível votar duas vezes.');
+        } else {
+            $confirmation->delete();
+        }
+
+        $confirmation = new Confirmation([
+            'user_id' => $user->id,
+            'place_id' => $place->id,
+            'exists' => $request->get('exists')
+        ]);
+        $confirmation->save();
+
+        return redirect()->back()->with('message', 'Ação realizada');
     }
 
-    public function getIndex(Request $request)
+    public function getSearch(Request $request)
     {
         if ($request->has('key')) {
             $key = $request->get('key');
@@ -66,10 +86,10 @@ class PlaceWebController extends Controller {
                 ->paginate(10);
 
             return view('place.list')->with(['places' => $places, 'query' => $key]);
-        } else if($request->has('type') && $request->has('category')) {
+        } elseif ($request->has('type') && $request->has('category')) {
             $type = $request->get('type');
             $places = Place::with('place_type')
-                ->whereHas('place_type', function($query) use ($type) {
+                ->whereHas('place_type', function ($query) use ($type) {
                     $query->where('place_types.id', '=', $type);
                 })
                 ->paginate(10);

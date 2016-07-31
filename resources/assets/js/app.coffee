@@ -52,7 +52,7 @@ $(document).ready ->
     setTimeout(() ->
       $('#message').fadeOut('fast')
       return
-    5000)
+    3500)
   return
 
 marker = null

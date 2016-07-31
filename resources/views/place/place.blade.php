@@ -5,6 +5,8 @@
         <div class="row">
             <!-- Display Validation Errors -->
             @include('common.errors')
+            <!-- Display Messages -->
+            @include('common.messages')
             <div class="panel panel-default">
                 <div class="panel-heading"><h4>{{ $place->name }} <span class="badge pull-right">{{ $confirmations }}</span></h4></div>
                 <div class="panel-body">

@@ -12242,7 +12242,7 @@ $(document).ready(function() {
   if ($('#message').length) {
     setTimeout(function() {
       $('#message').fadeOut('fast');
-    }, 5000);
+    }, 3500);
   }
 });
 

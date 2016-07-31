@@ -56,6 +56,7 @@
           <root url="file://$USER_HOME$/.composer/vendor/paragonie/random_compat" />
           <root url="file://$USER_HOME$/.composer/vendor/phpdocumentor/reflection-docblock" />
           <root url="file://$USER_HOME$/.composer/vendor/react/promise" />
+          <root url="file://$USER_HOME$/.composer/vendor/squizlabs/php_codesniffer" />
           <root url="file://$USER_HOME$/.composer/vendor/symfony/class-loader" />
           <root url="file://$USER_HOME$/.composer/vendor/symfony/console" />
           <root url="file://$USER_HOME$/.composer/vendor/symfony/finder" />
@@ -80,6 +81,7 @@
           <root url="file://$USER_HOME$/.composer/vendor/paragonie/random_compat" />
           <root url="file://$USER_HOME$/.composer/vendor/phpdocumentor/reflection-docblock" />
           <root url="file://$USER_HOME$/.composer/vendor/react/promise" />
+          <root url="file://$USER_HOME$/.composer/vendor/squizlabs/php_codesniffer" />
           <root url="file://$USER_HOME$/.composer/vendor/symfony/class-loader" />
           <root url="file://$USER_HOME$/.composer/vendor/symfony/console" />
           <root url="file://$USER_HOME$/.composer/vendor/symfony/finder" />

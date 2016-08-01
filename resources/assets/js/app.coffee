@@ -72,6 +72,7 @@ window.initMap = ->
   longitude = $('#longitude')
   current = $('#current')
   marker = null
+  drag = false
 
   map = new (google.maps.Map)(document.getElementById('map'),
     zoom: 12
@@ -83,28 +84,32 @@ window.initMap = ->
   lng = -47.898
   map.setZoom 15
 
-  if (latitude.val().length > 0 and longitude.val().length > 0)
-    lat = latitude.val()
-    lng = longitude.val()
+  if (latitude.length and longitude.length)
+    drag = true
+    if (latitude.val().length > 0 and longitude.val().length > 0)
+      lat = latitude.val()
+      lng = longitude.val()
 
   marker = new (google.maps.Marker)(
     position: new (google.maps.LatLng)(lat, lng)
-    draggable: true)
+    draggable: drag)
+
   map.setCenter marker.position
   marker.setMap map
 
-  google.maps.event.addListener marker, 'dragend', (evt) ->
-    current.html '<p>O lugar foi posicionado na latitude: ' + evt.latLng.lat().toFixed(3) + ' e longitude: ' + evt.latLng.lng().toFixed(3) + '</p>'
-    latitude.val marker.getPosition().lat()
-    longitude.val marker.getPosition().lng()
-    return
-  google.maps.event.addListener marker, 'dragstart', (evt) ->
-    current.html '<p>Posicionando o lugar...</p>'
-    return
-  geocoder = new (google.maps.Geocoder)
-  $('#search').click ->
-    geocodeAddress geocoder, map, marker
-    return
+  if (latitude.length and longitude.length)
+    google.maps.event.addListener marker, 'dragend', (evt) ->
+      current.html '<p>O lugar foi posicionado na latitude: ' + evt.latLng.lat().toFixed(3) + ' e longitude: ' + evt.latLng.lng().toFixed(3) + '</p>'
+      latitude.val marker.getPosition().lat()
+      longitude.val marker.getPosition().lng()
+      return
+    google.maps.event.addListener marker, 'dragstart', (evt) ->
+      current.html '<p>Posicionando o lugar...</p>'
+      return
+    geocoder = new (google.maps.Geocoder)
+    $('#search').click ->
+      geocodeAddress geocoder, map, marker
+      return
   return
 
 geocodeAddress = (geocoder, resultsMap, marker) ->

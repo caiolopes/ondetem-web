@@ -99,6 +99,22 @@ class PlaceWebController extends Controller
         ]);
         $confirmation->save();
 
+        /*
+        DB::connection('mysql_poi')
+            ->table('PlaceDetails')
+            ->insert([
+                'place_id' => $place->place_id,
+                'name' => $place->name,
+                'formatted_address' => $place->address,
+                'formatted_phone_number' => $place->phone,
+                'latitude' => $place->latitude,
+                'longitude' => $place->longitude,
+                'icon' => $place->icon,
+                'url' => $place->url,
+                'website' => $place->website,
+            ]);
+        */
+
         return redirect()->back()->with('message', 'Obrigado por contribuir!');
     }
 

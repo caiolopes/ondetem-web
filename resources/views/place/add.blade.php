@@ -1,15 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <style>
-        #map {
-            width: 100%;
-            height: 300px;
-        }
-        #current {
-            padding-top: 25px;
-        }
-    </style>
+
 <div class="container">
     <div class="row">
         <div class="col-xs-12 col-md-10 col-md-offset-1">
@@ -75,8 +67,8 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="name">Local (posicione o marcador no mapa):</label>
-                                <div id="map"></div>
-                                <div id="current">Local ainda não foi posicionado...</div>
+                                <div id="map" class="map"></div>
+                                <div id="current" style="padding-top: 25px;">Local ainda não foi posicionado...</div>
                             </div>
                         </div>
 

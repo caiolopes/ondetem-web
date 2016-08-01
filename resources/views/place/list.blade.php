@@ -49,7 +49,7 @@
                         </a>
                     @endforeach
                 </div>
-                {{ $places->links() }}
+                {{ $places->appends(request()->input())->links() }}
             </div>
         </div>
     </div>

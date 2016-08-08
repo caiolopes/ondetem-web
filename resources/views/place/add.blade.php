@@ -14,26 +14,26 @@
                     <!-- Display Messages -->
                     @include('common.messages')
 
-                    <form action="{{ (isset($place)) ? url('/place/edit/'.$place->id) : url('/place')}}" method="POST">
+                    <form action="{{ (isset($place->id)) ? url('/place/edit/'.$place->id) : url('/place')}}" method="POST">
                         {{ csrf_field() }}
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="name">Nome:</label>
-                                <input id="name" class="form-control" type="text" name="name" value="{{ (isset($place)) ? $place->name : '' }}">
+                                <input id="name" class="form-control" type="text" name="name" value="{{ (isset($place->name)) ? $place->name : '' }}">
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="phone">Telefone:</label>
-                                <input id="phone" class="form-control" type="text" name="phone" value="{{ (isset($place)) ? $place->phone : '' }}">
+                                <input id="phone" class="form-control" type="text" name="phone" value="{{ (isset($place->phone)) ? $place->phone : '' }}">
                             </div>
                         </div>
 
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label for="website">Website:</label>
-                                <input id="website" class="form-control" type="text" name="website" value="{{ (isset($place)) ? $place->website : '' }}">
+                                <input id="website" class="form-control" type="text" name="website" value="{{ (isset($place->website)) ? $place->website : '' }}">
                             </div>
                         </div>
 
@@ -41,7 +41,7 @@
                             <div class="form-group">
                                 <label for="category">Categoria:</label>
                                 <select id="category" class="form-control">
-                                    <option id="place-category" value="{{ (isset($place)) ? $place->place_type[0]->category : '' }}"></option>
+                                    <option id="place-category" value="{{ (isset($place->place_type[0]->category)) ? $place->place_type[0]->category : '' }}"></option>
                                 </select>
                             </div>
                         </div>
@@ -50,7 +50,7 @@
                             <div class="form-group">
                                 <label for="type">Tipo:</label>
                                 <select id="type" name="types[1][id]" class="form-control">
-                                    <option id="place-type" value="{{ (isset($place)) ? $place->place_type[0]->type : '' }}"></option>
+                                    <option id="place-type" value="{{ (isset($place_type[0]->type)) ? $place->place_type[0]->type : '' }}"></option>
                                 </select>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="address">Endereço:</label>
-                                <input id="address" class="form-control" type="text" name="address" value="{{ (isset($place)) ? $place->address : '' }}">
+                                <input id="address" class="form-control" type="text" name="address" value="{{ (isset($place->address)) ? $place->address : '' }}">
                                 <br>
                                 <input id="search" class="btn btn-default" type="button" value="Buscar">
                             </div>
@@ -72,12 +72,12 @@
                             </div>
                         </div>
 
-                        <input type="hidden" name="latitude" id="latitude" value="{{ (isset($place)) ? $place->latitude : '' }}">
-                        <input type="hidden" name="longitude" id="longitude" value="{{ (isset($place)) ? $place->longitude : '' }}">
+                        <input type="hidden" name="latitude" id="latitude" value="{{ (isset($place->latitude)) ? $place->latitude : '' }}">
+                        <input type="hidden" name="longitude" id="longitude" value="{{ (isset($place->longitude)) ? $place->longitude : '' }}">
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <a href="{{ (isset($place)) ? url('/place/'.$place->id) : url('/place') }}">
+                                <a href="{{ (isset($place->id)) ? url('/place/'.$place->id) : url('/place') }}">
                                     <button type="button" class="btn btn-default">Voltar</button>
                                 </a>
                                 <input type="submit" class="btn btn-primary pull-right"  value="{{ (isset($place)) ? 'Editar' : 'Cadastrar' }}">

@@ -35,7 +35,7 @@ class PlaceWebController extends Controller
     public function getEdit($id)
     {
         $place = Place::with('place_type')->find($id);
-        return view('place.add')->with(['place' => $place]);
+        return view('place.add')->with('place', $place);
     }
 
     public function postEdit(Request $request, $id)
@@ -74,7 +74,7 @@ class PlaceWebController extends Controller
         ]);
 
         $user = Auth::getUser();
-        $place = Place::find($request->get('place'));
+        $place = Place::with('place_type')->find($request->get('place'));
         $existsInDb = Confirmation::where(
             [['user_id', $user->id], ['place_id', $place->id]]
         )->first();
@@ -113,6 +113,15 @@ class PlaceWebController extends Controller
                 'url' => $place->url,
                 'website' => $place->website,
             ]);
+
+        DB::connection('mysql_poi')->table('RelateDetailsTypes');
+        foreach($place->place_type as $type) {
+              DB::connection('mysql')->table('place_place_type')->insert([
+                'relate_id' => $type->id,
+                'place_id' => $type->place_id,
+                'type_id' => $type->place_type_id
+            ]);
+        }
         */
 
         return redirect()->back()->with('message', 'Obrigado por contribuir!');

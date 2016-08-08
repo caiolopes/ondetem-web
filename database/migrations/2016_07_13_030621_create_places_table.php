@@ -13,7 +13,7 @@ class CreatePlacesTable extends Migration
     public function up()
     {
         Schema::create('places', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->string('id', 36);
             $table->primary('id');
             $table->string('name');
             $table->text('address')->nullable();

@@ -12,9 +12,9 @@ class PlacesTableSeeder extends Seeder
      */
     public function run()
     {
-        $places = DB::connection('mysql_poi')->select('select * from PlaceDetails');
+        $places = DB::connection('mysql_poi')->select('select * from PlaceDetails GROUP BY place_id');
         foreach($places as $place) {
-            DB::connection('mysql')->table('places')->insert([
+            DB::table('places')->insert([
                 'id' => $place->place_id,
                 'name' => $place->name,
                 'address' => $place->formatted_address,
@@ -31,7 +31,7 @@ class PlacesTableSeeder extends Seeder
 
         $types = DB::connection('mysql_poi')->select('select * from RelateDetailsTypes');
         foreach($types as $type) {
-              DB::connection('mysql')->table('place_place_type')->insert([
+              DB::table('place_place_type')->insert([
                 'id' => $type->relate_id,
                 'place_id' => $type->place_id,
                 'place_type_id' => $type->type_id,

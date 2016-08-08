@@ -14,7 +14,7 @@ class CreatePlacePlaceTypeTable extends Migration
     {
         Schema::create('place_place_type', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('place_id');
+            $table->string('place_id', 36);
             $table->integer('place_type_id')->unsigned();
             $table->unique(array('place_id', 'place_type_id'));
             $table->foreign('place_id')->references('id')->on('places')->onDelete('cascade');

@@ -15,7 +15,7 @@ class CreateConfirmationsTable extends Migration
         Schema::create('confirmations', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->uuid('place_id');
+            $table->string('place_id', 36);
             $table->boolean('exists');
             $table->unique(array('user_id', 'place_id'));
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

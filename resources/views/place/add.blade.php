@@ -14,7 +14,7 @@
                     <!-- Display Messages -->
                     @include('common.messages')
 
-                    <form action="{{ (isset($place->id)) ? url('/place/edit/'.$place->id) : url('/place')}}" method="POST">
+                    <form class="repeater" action="{{ (isset($place->id)) ? url('/place/edit/'.$place->id) : url('/place')}}" method="POST">
                         {{ csrf_field() }}
                         <div class="col-md-12">
                             <div class="form-group">
@@ -37,21 +37,64 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="category">Categoria:</label>
-                                <select id="category" class="form-control">
-                                    <option id="place-category" value="{{ (isset($place->place_type[0]->category)) ? $place->place_type[0]->category : '' }}"></option>
-                                </select>
-                            </div>
-                        </div>
+                        <div data-repeater-list="group-a">
+                            @if (isset($place->place_type))
+                                @for ($i = 0; $i < count($place->place_type); $i++)
+                                    <div data-repeater-item>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="category">Categoria:</label>
+                                                <select id="category" class="category form-control">
+                                                    <option class="place-category" value="{{ $place->place_type[$i]->category }}">{{ $place->place_type[$i]->category }}</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-                        <div class="col-md-6">
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="type">Tipo:</label>
+                                                <select id="type" name="types[{{$i}}][id]" class="type form-control">
+                                                    <option id="place-type" value="{{ $place->place_type[$i]->type }}">{{ $place->place_type[$i]->type }}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <br>
+                                            <input data-repeater-delete class="form-control" type="button" value="Deletar"/>
+                                            <br>
+                                        </div>
+                                    </div>
+                                @endfor
+                            @else
+                                <div data-repeater-item>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label for="category">Categoria:</label>
+                                            <select id="category" class="category form-control">
+                                                <option class="place-category" value=""></option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label for="type">Tipo:</label>
+                                            <select id="type" name="types[0][id]" class="type form-control">
+                                                <option class="place-type" value=""></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <br>
+                                        <input data-repeater-delete class="form-control" type="button" value="Deletar"/>
+                                        <br>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="col-md-2 pull-right">
                             <div class="form-group">
-                                <label for="type">Tipo:</label>
-                                <select id="type" name="types[1][id]" class="form-control">
-                                    <option id="place-type" value="{{ (isset($place_type[0]->type)) ? $place->place_type[0]->type : '' }}"></option>
-                                </select>
+                                <input class="form-control" data-repeater-create type="button" value="Adicionar"/>
                             </div>
                         </div>
 

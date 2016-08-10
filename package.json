@@ -10,6 +10,7 @@
     "gulp": "^3.9.1",
     "jquery": "^2.2.4",
     "jquery-confirm": "^1.5.1",
-    "laravel-elixir": "^5.0.0"
+    "laravel-elixir": "^5.0.0",
+     "jquery.repeater": "^1.1.3"
   }
 }

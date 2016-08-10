@@ -23,12 +23,12 @@
                 <form action="{{ url('/places/search') }}" method="GET" class="form-inline">
                     <div class="form-group">
                         <label for="category">Categoria:</label>
-                        <select id="category" name="category" class="form-control"></select>
+                        <select id="category" name="category" class="category form-control"></select>
                     </div>
 
                     <div class="form-group">
                         <label for="type">Tipo:</label>
-                        <select id="type" name="type" class="form-control"></select>
+                        <select id="type" name="type" class="type form-control"></select>
                     </div>
                     <div class="form-group">
                         <input class="btn btn-primary" type="submit" value="Filtrar">

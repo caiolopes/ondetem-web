@@ -22,6 +22,8 @@
                         @if ($place->phone) <p><b>Telefone:</b> {{ $place->phone }}</p> @endif
                         <p><b>Latitude:</b> {{ $place->latitude }}</p>
                         <p><b>Longitude:</b> {{ $place->longitude }}</p>
+                        <input type="hidden" id="latitude" value="{{ $place->latitude }}">
+                        <input type="hidden" id="longitude" value="{{ $place->longitude }}">
                         @if ($place->website) <p><b>Website:</b> {{ $place->website }}</p> @endif <p><b>Confirmações de usuários:</b> {{ $confirmations }}</p>
                         @foreach ($place->place_type as $place_type)
                         <p><b>Categoria:</b> {{ $place_type->category }}</p>

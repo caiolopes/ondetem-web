@@ -13285,7 +13285,9 @@ $(document).ready(function() {
     if (edit == null) {
       edit = false;
     }
+    console.log(edit);
     placeType = edit ? $('.place-type').first() : $('.place-type').last();
+    console.log(placeType.val());
     type = void 0;
     vars = getUrlVars();
     if (vars.type !== void 0) {

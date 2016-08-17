@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Confirmation;
 use App\Place;
-use Auth;
 use \Illuminate\Http\Request;
+use Log, DB, Auth;
 
 class PlaceWebController extends Controller
 {
@@ -26,10 +26,11 @@ class PlaceWebController extends Controller
     {
         $this->validate($request, $this->validationRules);
         $place = Place::create($request->except('types'));
+        $types = [];
         foreach ($request->get('types') as $type) {
-            $place->place_type()->sync($type);
+            $types[] = intval($type['id']);
         }
-        return redirect('/home')->with('message', 'Cadastrado com sucesso');
+        $place->place_type()->sync($types);        return redirect('/home')->with('message', 'Cadastrado com sucesso');
     }
 
     public function getEdit($id)
@@ -44,9 +45,11 @@ class PlaceWebController extends Controller
         $place = Place::find($id);
 
         $place->update($request->except('types'));
+        $types = [];
         foreach ($request->get('types') as $type) {
-            $place->place_type()->sync($type);
+            $types[] = intval($type['id']);
         }
+        $place->place_type()->sync($types);
 
         return redirect()->back()->with('message', 'Editado com sucesso');
     }
@@ -99,30 +102,31 @@ class PlaceWebController extends Controller
         ]);
         $confirmation->save();
 
-        /*
-        DB::connection('mysql_poi')
-            ->table('PlaceDetails')
-            ->insert([
-                'place_id' => $place->place_id,
-                'name' => $place->name,
-                'formatted_address' => $place->address,
-                'formatted_phone_number' => $place->phone,
-                'latitude' => $place->latitude,
-                'longitude' => $place->longitude,
-                'icon' => $place->icon,
-                'url' => $place->url,
-                'website' => $place->website,
-            ]);
+        $confirmations = Confirmation::where([['place_id', '=' ,$place->id], ['exists', '=', true]])->count();
+        if ($confirmations >= 2 && !$place->active) {
+            DB::connection('mysql_poi')
+                ->table('PlaceDetails')
+                ->insert([
+                    'place_id' => $place->id,
+                    'name' => $place->name,
+                    'formatted_address' => $place->address,
+                    'formatted_phone_number' => $place->phone,
+                    'latitude' => $place->latitude,
+                    'longitude' => $place->longitude,
+                    'icon' => $place->icon,
+                    'url' => $place->url,
+                    'website' => $place->website,
+                ]);
 
-        DB::connection('mysql_poi')->table('RelateDetailsTypes');
-        foreach($place->place_type as $type) {
-              DB::connection('mysql')->table('place_place_type')->insert([
-                'relate_id' => $type->id,
-                'place_id' => $type->place_id,
-                'type_id' => $type->place_type_id
-            ]);
+            foreach($place->place_type as $type) {
+                  DB::connection('mysql_poi')->table('RelateDetailsTypes')->insert([
+                    'place_id' => $type->place_id,
+                    'type_id' => $type->place_type_id
+                ]);
+            }
+            $place->active = true;
+            $place->save();
         }
-        */
 
         return redirect()->back()->with('message', 'Obrigado por contribuir!');
     }
@@ -145,6 +149,13 @@ class PlaceWebController extends Controller
                 })
                 ->paginate(10);
             return view('place.list')->with(['places' => $places]);
+        } else if($request->has('active')) {
+            $active = $request->get('active') == 'true' ? true : false;
+            if (is_bool($active)) {
+                $places = Place::where('active', $active)
+                    ->paginate(10);
+                return view('place.list')->with('places', $places);
+            }
         }
         return redirect('/places');
     }

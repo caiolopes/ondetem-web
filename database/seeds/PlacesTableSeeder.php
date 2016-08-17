@@ -24,6 +24,7 @@ class PlacesTableSeeder extends Seeder
                 'icon' => $place->icon,
                 'url' => $place->url,
                 'website' => $place->website,
+                'active' => true,
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
             ]);

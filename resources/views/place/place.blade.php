@@ -29,6 +29,7 @@
                         <p><b>Categoria:</b> {{ $place_type->category }}</p>
                         <p><b>Tipo:</b> {{ $place_type->type }}</p>
                         @endforeach
+                        <p><b>Ativo:</b> {{ $place->active ? 'Sim' : 'Não'}}</p>
                         <div id="map" class="map"></div>
                         <br>
                         <p>
@@ -66,5 +67,5 @@
     </div>
 
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCppnNL6ttK0K3v8U21aPO2mOvS4OgtJAs&callback=initMap"></script>
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6wG7WcXrAQEWak1WwSa0KsncShVojbdU&callback=initMap"></script>
 @endsection

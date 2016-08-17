@@ -37,7 +37,7 @@
                             </div>
                         </div>
 
-                        <div data-repeater-list="group-a">
+                        <div data-repeater-list="types">
                             @if (isset($place->place_type))
                                 @for ($i = 0; $i < count($place->place_type); $i++)
                                     <div data-repeater-item>
@@ -54,7 +54,7 @@
                                             <div class="form-group">
                                                 <label for="type">Tipo:</label>
                                                 <select id="type" name="types[{{$i}}][id]" class="type form-control">
-                                                    <option id="place-type" value="{{ $place->place_type[$i]->type }}">{{ $place->place_type[$i]->type }}</option>
+                                                    <option id="place-type" class="place-type" value="{{ $place->place_type[$i]->type }}">{{ $place->place_type[$i]->type }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -133,5 +133,5 @@
     </div>
 </div>
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCppnNL6ttK0K3v8U21aPO2mOvS4OgtJAs&callback=initMap"></script>
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6wG7WcXrAQEWak1WwSa0KsncShVojbdU&callback=initMap"></script>
 @endsection

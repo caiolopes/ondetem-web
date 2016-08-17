@@ -39,12 +39,28 @@
         </div>
 
         <div class="row">
+            <div class="col-xs-3 col-md-1">
+                <a href={{ url('/places') }}><button class="btn btn-primary {{ empty(request()->input('active')) ? 'active' : '' }}">Todos</button></a>
+            </div>
+            <div class="col-xs-3 col-md-1">
+                <a href={{ url('/places/search')."?active=true" }}>
+                    <button class="btn btn-primary {{ request()->input('active') == 'true' ? 'active' : '' }}">Ativos</button>
+                </a>
+            </div>
+            <div class="col-xs-3 col-md-1">
+                <a href={{ url('/places/search')."?active=false" }}>
+                    <button class="btn btn-primary {{ request()->input('active') == 'false'? 'active' : '' }}">Não ativos</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-xs-12">
                 <h3>Lista:</h3>
                 <div class="list-group">
                     @foreach ($places as $place)
                         <a class="list-group-item" href="{{ url('/place/'.$place->id) }}">
-                            <h4 class="list-group-item-heading">{{ $place->name }}</h4>
+                            <h4 class="list-group-item-heading">{{ $place->name }} <i class="pull-right fa {{ $place->active ? 'fa-check' : 'fa-times' }}" aria-hidden="true"></i></h4>
                             <p class="list-group-item-text">{{ $place->address }}</p>
                         </a>
                     @endforeach

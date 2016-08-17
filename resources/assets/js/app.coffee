@@ -98,7 +98,9 @@ $(document).ready ->
     return
 
   getTypes = (category, edit = false) ->
+    console.log edit
     placeType = if edit then $('.place-type').first() else $('.place-type').last()
+    console.log placeType.val()
     type = undefined
     vars = getUrlVars()
 

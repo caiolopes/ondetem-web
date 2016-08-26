@@ -24,26 +24,35 @@
                         <p><b>Longitude:</b> {{ $place->longitude }}</p>
                         <input type="hidden" id="latitude" value="{{ $place->latitude }}">
                         <input type="hidden" id="longitude" value="{{ $place->longitude }}">
-                        @if ($place->website) <p><b>Website:</b> {{ $place->website }}</p> @endif <p><b>Confirmações de usuários:</b> {{ $confirmations }}</p>
+                        @if ($place->website) <p><b>Website:</b> {{ $place->website }}</p> @endif <p><b>Confirmações de usuários:</b> {{ $positive }} positivas e {{ $negative }} negativas</p>
                         @foreach ($place->place_type as $place_type)
                         <p><b>Categoria:</b> {{ $place_type->category }}</p>
                         <p><b>Tipo:</b> {{ $place_type->type }}</p>
                         @endforeach
                         <p><b>Ativo:</b> {{ $place->active ? 'Sim' : 'Não'}}</p>
-                        <div id="map" class="map"></div>
-                        <br>
                         <p>
                             <b>Você confirma as informações desse lugar?</b>
                             <a href="{{ url('/place/confirm?place='.$place->id."&exists=1") }}"><button class="btn btn-success">Sim</button></a>
                             <a href="{{ url('/place/confirm?place='.$place->id."&exists=0") }}"><button class="btn btn-danger">Não</button></a>
                         </p>
+                        <p><div id="map" class="map"></div></p>
+                        @if((!$place->active && !Auth::user()->is_admin) || Auth::user()->is_admin)
                         <div class="well pull-right">
                             <h4>Ações:</h4>
+                            @if(Auth::user()->is_admin)
+                                @if(!$place->active)
+                                <a href="{{ url('/place/activate/'.$place->id) }}"><button class="btn btn-success"><i class="fa fa-paper-plane" aria-hidden="true"></i> Ativar</button></a>
+                                <button data-href="{{ url('/place/delete/'.$place->id) }}" data-toggle="modal" data-target="#confirm-delete" class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i> Deletar</button>
+                                @else
+                                <button class="btn btn-danger"><i class="fa fa-paper-plane" aria-hidden="true"></i> Desativar</button>
+                                @endif
+                            </a>
+                            @endif
                             <a href="{{ url('/place/edit/'.$place->id) }}">
                                 <button class="btn btn-info"><i class="fa fa-pencil" aria-hidden="true"></i> Editar</button>
                             </a>
-                            <button data-href="{{ url('/place/delete/'.$place->id) }}" data-toggle="modal" data-target="#confirm-delete" class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i> Deletar</button>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

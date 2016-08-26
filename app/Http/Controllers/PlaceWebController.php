@@ -66,7 +66,38 @@ class PlaceWebController extends Controller
         $positive = Confirmation::where([['place_id', $id], ['exists', true]])->count();
         $negative = Confirmation::where([['place_id', $id], ['exists', false]])->count();
         $confirmations = $positive - $negative;
-        return view('place.place')->with(['place' => $place, 'confirmations' => $confirmations]);
+        return view('place.place')->with([
+            'place'         => $place,
+            'confirmations' => $confirmations,
+            'positive'      => $positive,
+            'negative'      => $negative
+        ]);
+    }
+
+    public function getActivate(Request $request, $id)
+    {
+        $place = Place::find($id);
+        if (Auth::user()->is_admin) {
+            if ($place->active) {
+                DB::connection('mysql_poi')
+                // Delete reviews
+                        ->delete("DELETE ur from UserReviews ur join Events e using(event_id) WHERE e.place_id='$place->id'");
+                // Delete Events
+                DB::connection('mysql_poi')
+                        ->delete("DELETE FROM Events WHERE place_id='$place->id'");
+                // Delete the types associated with it
+                DB::connection('mysql_poi')
+                        ->delete("DELETE FROM RelateDetailsTypes WHERE place_id='$place->id'");
+                // Delete the place itself
+                DB::connection('mysql_poi')
+                        ->delete("DELETE FROM PlaceDetails WHERE place_id='$place->id'");
+                $place->active = false;
+                $place->save();
+            } else {
+                $this->insertPlace($place);
+            }
+        }
+        return redirect()->back();
     }
 
     public function getConfirm(Request $request)
@@ -103,8 +134,15 @@ class PlaceWebController extends Controller
         $confirmation->save();
 
         $confirmations = Confirmation::where([['place_id', '=' ,$place->id], ['exists', '=', true]])->count();
-        if ($confirmations >= 2 && !$place->active) {
-            DB::connection('mysql_poi')
+        if ($confirmations >= 3 && !$place->active) {
+             $this->insertPlace($place);
+        }
+
+        return redirect()->back()->with('message', 'Obrigado por contribuir!');
+    }
+
+    private function insertPlace($place) {
+        DB::connection('mysql_poi')
                 ->table('PlaceDetails')
                 ->insert([
                     'place_id' => $place->id,
@@ -120,15 +158,12 @@ class PlaceWebController extends Controller
 
             foreach($place->place_type as $type) {
                   DB::connection('mysql_poi')->table('RelateDetailsTypes')->insert([
-                    'place_id' => $type->place_id,
-                    'type_id' => $type->place_type_id
+                    'place_id' => $place->id,
+                    'type_id' => $type->id
                 ]);
             }
             $place->active = true;
             $place->save();
-        }
-
-        return redirect()->back()->with('message', 'Obrigado por contribuir!');
     }
 
     public function getSearch(Request $request)

@@ -79,20 +79,23 @@ class PlaceWebController extends Controller
         $place = Place::find($id);
         if (Auth::user()->is_admin) {
             if ($place->active) {
-                DB::connection('mysql_poi')
-                // Delete reviews
-                        ->delete("DELETE ur from UserReviews ur join Events e using(event_id) WHERE e.place_id='$place->id'");
-                // Delete Events
-                DB::connection('mysql_poi')
-                        ->delete("DELETE FROM Events WHERE place_id='$place->id'");
-                // Delete the types associated with it
-                DB::connection('mysql_poi')
-                        ->delete("DELETE FROM RelateDetailsTypes WHERE place_id='$place->id'");
-                // Delete the place itself
-                DB::connection('mysql_poi')
-                        ->delete("DELETE FROM PlaceDetails WHERE place_id='$place->id'");
-                $place->active = false;
-                $place->save();
+                try {
+                    DB::connection('mysql_poi')
+                    // Delete reviews
+                            ->delete("DELETE ur from UserReviews ur join Events e using(event_id) WHERE e.place_id='$place->id'");
+                    // Delete Events
+                    DB::connection('mysql_poi')
+                            ->delete("DELETE FROM Events WHERE place_id='$place->id'");
+                    // Delete the types associated with it
+                    DB::connection('mysql_poi')
+                            ->delete("DELETE FROM RelateDetailsTypes WHERE place_id='$place->id'");
+                    // Delete the place itself
+                    DB::connection('mysql_poi')
+                            ->delete("DELETE FROM PlaceDetails WHERE place_id='$place->id'");
+                    $place->active = false;
+                    $place->save();
+                } catch(PDOException $e) {
+                }
             } else {
                 $this->insertPlace($place);
             }
@@ -142,28 +145,32 @@ class PlaceWebController extends Controller
     }
 
     private function insertPlace($place) {
-        DB::connection('mysql_poi')
-                ->table('PlaceDetails')
-                ->insert([
-                    'place_id' => $place->id,
-                    'name' => $place->name,
-                    'formatted_address' => $place->address,
-                    'formatted_phone_number' => $place->phone,
-                    'latitude' => $place->latitude,
-                    'longitude' => $place->longitude,
-                    'icon' => $place->icon,
-                    'url' => $place->url,
-                    'website' => $place->website,
-                ]);
+        try {
+            DB::connection('mysql_poi')
+                    ->table('PlaceDetails')
+                    ->insert([
+                        'place_id' => $place->id,
+                        'name' => $place->name,
+                        'formatted_address' => $place->address,
+                        'formatted_phone_number' => $place->phone,
+                        'latitude' => $place->latitude,
+                        'longitude' => $place->longitude,
+                        'icon' => $place->icon,
+                        'url' => $place->url,
+                        'website' => $place->website,
+                    ]);
 
-            foreach($place->place_type as $type) {
-                  DB::connection('mysql_poi')->table('RelateDetailsTypes')->insert([
-                    'place_id' => $place->id,
-                    'type_id' => $type->id
-                ]);
-            }
+                foreach($place->place_type as $type) {
+                      DB::connection('mysql_poi')->table('RelateDetailsTypes')->insert([
+                        'place_id' => $place->id,
+                        'type_id' => $type->id
+                    ]);
+                }
             $place->active = true;
             $place->save();
+        } catch(PDOException $e) {
+
+        }
     }
 
     public function getSearch(Request $request)
